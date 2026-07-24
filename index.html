@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comic Coin — Know What You're Holding</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+
+  :root {
+    --paper: #F8F3E7;
+    --paper-dim: #EFE6D3;
+    --ink: #241F1A;
+    --red: #B5342E;
+    --gold: #C9973F;
+    --gold-deep: #A87A2C;
+    --verified: #3B7A5A;
+    --line: rgba(36,31,26,0.10);
+    --shadow-sm: 0 2px 10px rgba(36,31,26,0.08);
+    --shadow-md: 0 10px 30px rgba(36,31,26,0.12);
+    --shadow-lg: 0 18px 46px rgba(36,31,26,0.16);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', serif;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* --- Nav --- */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px; position: sticky; top: 0; z-index: 20;
+    background: rgba(248,243,231,0.85); backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-sm);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+  .nav-logo svg { width: 36px; height: 36px; }
+  .nav-logo span {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 21px; letter-spacing: 0.01em;
+  }
+  .nav-links { display: flex; gap: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; }
+  .nav-links a { text-decoration: none; opacity: 0.62; transition: opacity 0.15s; }
+  .nav-links a:hover { opacity: 1; }
+  .nav-cta {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--red); color: var(--paper); padding: 10px 20px; border-radius: 999px;
+    text-decoration: none; box-shadow: var(--shadow-sm); transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  @media (max-width: 720px) { .nav-links { display: none; } }
+
+  /* --- Hero --- */
+  .hero { text-align: center; padding: 100px 24px 60px; }
+  .hero-coin {
+    width: 118px; height: 118px; margin: 0 auto 26px; display: block;
+    filter: drop-shadow(0 14px 28px rgba(36,31,26,0.18));
+    opacity: 0; transform: scale(0.9);
+    animation: coinIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes coinIn { to { opacity: 1; transform: scale(1); } }
+  .hero .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--red); font-weight: 600; margin-bottom: 16px;
+    opacity: 0; animation: fadeUp 0.7s ease forwards;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height: 1.08;
+    font-size: clamp(44px, 7.5vw, 88px); margin: 0 0 20px; letter-spacing: 0.002em;
+    opacity: 0; animation: fadeUp 0.7s ease 0.1s forwards;
+  }
+  .hero h1 .accent { color: var(--red); font-style: italic; font-weight: 500; }
+  .hero p.sub {
+    font-size: clamp(16px, 2.1vw, 19px); max-width: 580px; margin: 0 auto 38px;
+    color: rgba(36,31,26,0.72); line-height: 1.65; font-weight: 400;
+    opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+  .hero-ctas {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.7s ease 0.3s forwards;
+  }
+  .btn-primary {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: 19px;
+    background: linear-gradient(135deg, var(--red), #9c2a25); color: var(--paper);
+    border: none; border-radius: 999px;
+    padding: 16px 34px; text-decoration: none; display: inline-block;
+    box-shadow: var(--shadow-md); transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .btn-secondary {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    background: transparent; color: var(--ink); border: 1.5px solid rgba(36,31,26,0.25); border-radius: 999px;
+    padding: 15px 26px; text-decoration: none; display: inline-block;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .btn-secondary:hover { background: var(--paper-dim); border-color: rgba(36,31,26,0.4); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* --- Credibility strip (right after hero — the "credibility moment") --- */
+  .credibility {
+    padding: 26px 20px;
+  }
+  .credibility .wrap {
+    display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
+    background: var(--paper-dim); border-radius: 22px; box-shadow: var(--shadow-sm);
+    padding: 24px 30px;
+  }
+  .credibility .item {
+    display: flex; flex-direction: column; gap: 5px; align-items: center; text-align: center;
+    flex: 1 1 180px; padding: 6px 16px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .credibility .item .big { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 18px; text-transform: none; letter-spacing: 0; color: var(--ink); }
+  .credibility .item .lbl { opacity: 0.55; }
+
+  /* --- Benefits --- */
+  section { padding: 76px 24px; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+  .section-head .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--red); font-weight: 600; margin-bottom: 12px;
+  }
+  .section-head h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(32px, 4.6vw, 50px); margin: 0; letter-spacing: 0.005em; }
+
+  .benefits-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px;
+  }
+  @media (max-width: 700px) { .benefits-grid { grid-template-columns: 1fr; } }
+  .benefit-card {
+    background: var(--paper-dim); border-radius: 24px; padding: 32px 28px;
+    box-shadow: var(--shadow-sm); transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .benefit-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+  .benefit-card .icon {
+    font-size: 24px; margin-bottom: 16px; width: 52px; height: 52px; border-radius: 50%;
+    background: var(--paper); display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .benefit-card h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 22px; margin: 0 0 10px; }
+  .benefit-card p { font-size: 14.5px; line-height: 1.6; margin: 0; color: rgba(36,31,26,0.72); }
+
+  /* --- How it works --- */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  @media (max-width: 850px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+  .step { text-align: center; }
+  .step .num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--ink), #3a332b); color: var(--paper);
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; box-shadow: var(--shadow-sm);
+  }
+  .step h4 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 17px; margin: 0 0 8px; letter-spacing: 0.005em; }
+  .step p { font-size: 13.5px; color: rgba(36,31,26,0.68); line-height: 1.55; margin: 0; }
+
+  /* --- Shop CTA band --- */
+  .shop-band {
+    background: linear-gradient(160deg, var(--ink), #322b23);
+    color: var(--paper); text-align: center; padding: 72px 24px;
+    margin: 0 24px; border-radius: 32px;
+  }
+  @media (max-width: 700px) { .shop-band { margin: 0 12px; border-radius: 24px; } }
+  .band-coin { width: 80px; height: 80px; margin: 0 auto 20px; display: block; filter: drop-shadow(0 10px 22px rgba(0,0,0,0.35)); }
+  .shop-band .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+  .shop-band h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(30px, 4.6vw, 46px); margin: 0 0 18px; letter-spacing: 0.005em; }
+  .shop-band p { max-width: 560px; margin: 0 auto 32px; font-size: 15.5px; line-height: 1.65; opacity: 0.8; }
+  .btn-gold {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: 18px;
+    background: linear-gradient(135deg, #E0B563, var(--gold-deep)); color: var(--ink);
+    border: none; border-radius: 999px;
+    padding: 15px 32px; text-decoration: none; display: inline-block;
+    box-shadow: 0 10px 28px rgba(201,151,63,0.35); transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(201,151,63,0.45); }
+
+  /* --- Footer --- */
+  footer { padding: 48px 24px 20px; text-align: center; }
+  footer .foot-logo { display: flex; align-items: center; justify-content: center; gap: 9px; margin-bottom: 14px; }
+  footer .foot-logo svg { width: 30px; height: 30px; }
+  footer .foot-logo span { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 15px; }
+  footer p { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: rgba(36,31,26,0.45); margin: 4px 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#top">
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="coinGradient-nav" cx="35%" cy="30%" r="75%">
+          <stop offset="0%" stop-color="#F3D98A"/><stop offset="55%" stop-color="#E4A93A"/><stop offset="100%" stop-color="#B9791F"/>
+        </radialGradient>
+        <path id="rimTextPath-nav" d="M 200,200 m -156,0 a 156,156 0 1,1 312,0 a 156,156 0 1,1 -312,0"/>
+      </defs>
+      <circle cx="200" cy="200" r="186" fill="#1C1A17"/>
+      <circle cx="200" cy="200" r="172" fill="url(#coinGradient-nav)"/>
+      <circle cx="200" cy="200" r="152" fill="none" stroke="#1C1A17" stroke-width="3" opacity="0.55"/>
+      <circle cx="200" cy="200" r="144" fill="none" stroke="#1C1A17" stroke-width="1.5" opacity="0.35"/>
+      <text font-family="'IBM Plex Mono', monospace" font-size="13.5" font-weight="600" fill="#1C1A17" opacity="0.82">
+        <textPath href="#rimTextPath-nav" startOffset="0%" textLength="980" lengthAdjust="spacingAndGlyphs">COMIC COIN &#8226; PROVENANCE VERIFIED ON THE XRPL &#8226; </textPath>
+      </text>
+      <g font-family="'Cormorant Garamond', serif" font-weight="600">
+        <text x="152" y="255" font-size="200" fill="#1C1A17" opacity="0.92" text-anchor="middle">C</text>
+        <text x="248" y="255" font-size="200" fill="#F1E8D3" text-anchor="middle" transform="scale(-1,1) translate(-496,0)">C</text>
+      </g>
+    </svg>
+    <span>COMIC COIN</span>
+  </a>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#benefits">Why It Matters</a>
+    <a href="#shops">For Shops</a>
+  </div>
+  <a class="nav-cta" href="#shops">Partner Your Shop</a>
+</nav>
+
+<section class="hero" id="top">
+  <svg class="hero-coin" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="coinGradient-hero" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#F3D98A"/><stop offset="55%" stop-color="#E4A93A"/><stop offset="100%" stop-color="#B9791F"/>
+      </radialGradient>
+      <pattern id="halftone-hero" width="14" height="14" patternUnits="userSpaceOnUse">
+        <circle cx="7" cy="7" r="1.6" fill="#1C1A17" opacity="0.10"/>
+      </pattern>
+      <path id="rimTextPath-hero" d="M 200,200 m -156,0 a 156,156 0 1,1 312,0 a 156,156 0 1,1 -312,0"/>
+    </defs>
+    <circle cx="200" cy="200" r="186" fill="#1C1A17"/>
+    <circle cx="200" cy="200" r="172" fill="url(#coinGradient-hero)"/>
+    <circle cx="200" cy="200" r="172" fill="url(#halftone-hero)"/>
+    <circle cx="200" cy="200" r="152" fill="none" stroke="#1C1A17" stroke-width="3" opacity="0.55"/>
+    <circle cx="200" cy="200" r="144" fill="none" stroke="#1C1A17" stroke-width="1.5" opacity="0.35"/>
+    <text font-family="'IBM Plex Mono', monospace" font-size="13.5" font-weight="600" fill="#1C1A17" opacity="0.82">
+      <textPath href="#rimTextPath-hero" startOffset="0%" textLength="980" lengthAdjust="spacingAndGlyphs">COMIC COIN &#8226; PROVENANCE VERIFIED ON THE XRPL &#8226; </textPath>
+    </text>
+    <g font-family="'Cormorant Garamond', serif" font-weight="600">
+      <text x="152" y="255" font-size="200" fill="#1C1A17" opacity="0.92" text-anchor="middle">C</text>
+      <text x="248" y="255" font-size="200" fill="#F1E8D3" text-anchor="middle" transform="scale(-1,1) translate(-496,0)">C</text>
+    </g>
+  </svg>
+  <div class="eyebrow">Provenance for Physical Comics</div>
+  <h1>Know exactly<br>what you're <span class="accent">holding.</span></h1>
+  <p class="sub">Every comic gets a verified, tamper-evident record of its condition and ownership history — checked with a scan, not just a signature on a slab.</p>
+  <div class="hero-ctas">
+    <a class="btn-primary" href="#shops">Partner Your Shop</a>
+    <a class="btn-secondary" href="#how">See How It Works</a>
+  </div>
+</section>
+
+<div class="credibility">
+  <div class="wrap">
+    <div class="item"><div class="big">XRP Ledger</div><div class="lbl">Every record on-chain</div></div>
+    <div class="item"><div class="big">You Keep Your Comics</div><div class="lbl">We never take custody</div></div>
+    <div class="item"><div class="big">IPFS-Backed</div><div class="lbl">Tamper-evident storage</div></div>
+    <div class="item"><div class="big">Actively Piloting</div><div class="lbl">With local comic shops</div></div>
+  </div>
+</div>
+
+<section id="benefits">
+  <div class="section-head">
+    <div class="eyebrow">Why It Matters</div>
+    <h2>Trust shouldn't end at the slab.</h2>
+  </div>
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="icon">🤝</div>
+      <h3>You always keep your comics</h3>
+      <p>We never ask any collector or shop to ship us a comic or hand it over for custody. No vaulting, no shipping, no middleman holding your book — it stays exactly where it belongs, with you.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="icon">📊</div>
+      <h3>Graded to industry standards</h3>
+      <p>Condition is assessed against the same 0.5–10.0 scale used by leading grading companies, backed by real photos saved permanently to the ledger — not just a claim on a piece of paper.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="icon">🔎</div>
+      <h3>Verify in seconds</h3>
+      <p>Scan the QR code on any Comic Coin book and see its full, tamper-evident record instantly — no accounts, no guesswork.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="icon">🏪</div>
+      <h3>Protect your shop</h3>
+      <p>Give customers a reason to trust your inventory — and make it harder for stolen or misrepresented books to move quietly.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-head">
+    <div class="eyebrow">How It Works</div>
+    <h2>From intake to verified sale.</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <h4>Shop Intake</h4>
+      <p>A participating shop photographs the comic and logs its condition.</p>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <h4>Minted On-Chain</h4>
+      <p>A verified record is created on the XRP Ledger, tied to that exact copy.</p>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <h4>QR Sticker Applied</h4>
+      <p>The book gets a scannable link to its permanent, verifiable record.</p>
+    </div>
+    <div class="step">
+      <div class="num">4</div>
+      <h4>Verified Every Time</h4>
+      <p>Every future sale or recheck updates the same record — a real history, not a one-time snapshot.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-head">
+    <div class="eyebrow">Simple, Transparent Pricing</div>
+    <h2>No hidden fees. No surprises.</h2>
+  </div>
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="icon">🏪</div>
+      <h3>Monthly shop subscription</h3>
+      <p>A flat, predictable fee to access intake, QR minting, and lookup tools for your shop — steady cost, no matter your sales volume.</p>
+    </div>
+    <div class="benefit-card">
+      <div class="icon">🔁</div>
+      <h3>Small resale royalty</h3>
+      <p>A small percentage on future resales, paid automatically on-chain — nothing extra for you to track or invoice.</p>
+    </div>
+  </div>
+</section>
+
+<section class="shop-band" id="shops">
+  <svg class="band-coin" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="coinGradient-band" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#F3D98A"/><stop offset="55%" stop-color="#E4A93A"/><stop offset="100%" stop-color="#B9791F"/>
+      </radialGradient>
+      <path id="rimTextPath-band" d="M 200,200 m -156,0 a 156,156 0 1,1 312,0 a 156,156 0 1,1 -312,0"/>
+    </defs>
+    <circle cx="200" cy="200" r="186" fill="#F1E8D3"/>
+    <circle cx="200" cy="200" r="172" fill="url(#coinGradient-band)"/>
+    <circle cx="200" cy="200" r="152" fill="none" stroke="#1C1A17" stroke-width="3" opacity="0.55"/>
+    <circle cx="200" cy="200" r="144" fill="none" stroke="#1C1A17" stroke-width="1.5" opacity="0.35"/>
+    <text font-family="'IBM Plex Mono', monospace" font-size="13.5" font-weight="600" fill="#1C1A17" opacity="0.82">
+      <textPath href="#rimTextPath-band" startOffset="0%" textLength="980" lengthAdjust="spacingAndGlyphs">COMIC COIN &#8226; PROVENANCE VERIFIED ON THE XRPL &#8226; </textPath>
+    </text>
+    <g font-family="'Cormorant Garamond', serif" font-weight="600">
+      <text x="152" y="255" font-size="200" fill="#1C1A17" opacity="0.92" text-anchor="middle">C</text>
+      <text x="248" y="255" font-size="200" fill="#F1E8D3" text-anchor="middle" transform="scale(-1,1) translate(-496,0)">C</text>
+    </g>
+  </svg>
+  <div class="eyebrow">For Comic Shops</div>
+  <h2>Be one of the first shops on Comic Coin.</h2>
+  <p>We're piloting with a small number of local comic shops right now. If you want your inventory backed by a real, verifiable provenance record, we'd like to talk.</p>
+  <a class="btn-gold" href="partner.html">Partner Your Shop</a>
+</section>
+
+<footer>
+  <div class="foot-logo">
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="coinGradient-foot" cx="35%" cy="30%" r="75%">
+          <stop offset="0%" stop-color="#F3D98A"/><stop offset="55%" stop-color="#E4A93A"/><stop offset="100%" stop-color="#B9791F"/>
+        </radialGradient>
+        <path id="rimTextPath-foot" d="M 200,200 m -156,0 a 156,156 0 1,1 312,0 a 156,156 0 1,1 -312,0"/>
+      </defs>
+      <circle cx="200" cy="200" r="186" fill="#1C1A17"/>
+      <circle cx="200" cy="200" r="172" fill="url(#coinGradient-foot)"/>
+      <circle cx="200" cy="200" r="152" fill="none" stroke="#1C1A17" stroke-width="3" opacity="0.55"/>
+      <circle cx="200" cy="200" r="144" fill="none" stroke="#1C1A17" stroke-width="1.5" opacity="0.35"/>
+      <text font-family="'IBM Plex Mono', monospace" font-size="13.5" font-weight="600" fill="#1C1A17" opacity="0.82">
+        <textPath href="#rimTextPath-foot" startOffset="0%" textLength="980" lengthAdjust="spacingAndGlyphs">COMIC COIN &#8226; PROVENANCE VERIFIED ON THE XRPL &#8226; </textPath>
+      </text>
+      <g font-family="'Cormorant Garamond', serif" font-weight="600">
+        <text x="152" y="255" font-size="200" fill="#1C1A17" opacity="0.92" text-anchor="middle">C</text>
+        <text x="248" y="255" font-size="200" fill="#F1E8D3" text-anchor="middle" transform="scale(-1,1) translate(-496,0)">C</text>
+      </g>
+    </svg>
+    <span>COMIC COIN</span>
+  </div>
+  <p>Currently piloting on XRPL Testnet — no real monetary transactions yet.</p>
+  <p>© 2026 Comic Coin. Built for collectors and the shops they trust.</p>
+</footer>
+
+</body>
+</html>

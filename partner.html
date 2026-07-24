@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comic Coin — Partner Your Shop</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+
+  :root {
+    --paper: #F1E8D3;
+    --paper-dim: #E5D9BE;
+    --ink: #1C1A17;
+    --red: #C1272D;
+    --gold: #E4A93A;
+    --verified: #2E6E4E;
+    --line: rgba(28,26,23,0.16);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Source Serif 4', serif;
+    background-image: radial-gradient(var(--line) 1px, transparent 1px);
+    background-size: 16px 16px;
+    padding: 32px 16px 64px;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.06em; text-decoration: none;
+    margin-bottom: 20px; opacity: 0.7;
+  }
+  .back-link:hover { opacity: 1; }
+
+  .masthead { text-align: center; margin-bottom: 8px; }
+  .masthead .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--red); font-weight: 600;
+  }
+  .masthead h1 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(38px, 7vw, 56px);
+    margin: 4px 0 10px; line-height: 1.05;
+  }
+  .masthead .sub {
+    font-family: 'Source Serif 4', serif; font-size: 15.5px; color: rgba(28,26,23,0.75);
+    max-width: 480px; margin: 0 auto 30px; line-height: 1.6;
+  }
+
+  fieldset {
+    border: 3px solid var(--ink); background: var(--paper-dim);
+    box-shadow: 6px 6px 0 var(--ink); padding: 22px; margin: 0 0 22px;
+  }
+  legend {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.1em; padding: 0 8px;
+  }
+  label {
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em; margin: 14px 0 6px; color: rgba(28,26,23,0.7);
+  }
+  label:first-of-type { margin-top: 0; }
+  .optional { text-transform: none; letter-spacing: 0; opacity: 0.55; }
+  input, select, textarea {
+    width: 100%; font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    padding: 10px 12px; border: 2px solid var(--ink); background: var(--paper); color: var(--ink);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  input:focus, select:focus, textarea:focus { outline: 3px solid var(--gold); outline-offset: 0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+
+  /* Honeypot — hidden from real users, catches basic bots */
+  .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  button {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: 20px;
+    background: var(--red); color: var(--paper); border: 3px solid var(--ink);
+    padding: 14px 20px; width: 100%; cursor: pointer;
+    box-shadow: 5px 5px 0 var(--ink); transition: transform 0.12s, box-shadow 0.12s;
+  }
+  button:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+  button:active { transform: translate(0,0); box-shadow: 2px 2px 0 var(--ink); }
+  button:disabled { opacity: 0.6; cursor: wait; }
+
+  .fine-print {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: rgba(28,26,23,0.55);
+    text-align: center; margin-top: 12px; line-height: 1.6;
+  }
+
+  .status { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; margin-top: 14px; min-height: 18px; text-align: center; }
+  .status.err { color: var(--red); }
+  .status.ok { color: var(--verified); }
+
+  .confirmation {
+    display: none; text-align: center; border: 3px solid var(--verified); background: var(--paper-dim);
+    padding: 30px 22px; box-shadow: 6px 6px 0 var(--ink);
+  }
+  .confirmation.show { display: block; }
+  .confirmation h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 28px; margin: 0 0 10px; color: var(--verified); }
+  .confirmation p { font-size: 14.5px; line-height: 1.6; margin: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="index.html">&larr; Back to Comic Coin</a>
+
+  <div class="masthead">
+    <div class="eyebrow">For Comic Shops</div>
+    <h1>Let's talk.</h1>
+    <p class="sub">Tell us a bit about your shop. This isn't a binding agreement — just the start of a conversation about the pilot.</p>
+  </div>
+
+  <form id="partnerForm" novalidate>
+    <fieldset>
+      <legend>Your Shop</legend>
+      <label for="shopName">Shop / business name</label>
+      <input id="shopName" required>
+
+      <div class="grid">
+        <div>
+          <label for="contactName">Your name</label>
+          <input id="contactName" required>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" required>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="city">City</label>
+          <input id="city" required>
+        </div>
+        <div>
+          <label for="state">State</label>
+          <input id="state" required>
+        </div>
+      </div>
+
+      <label for="website">Shop website or social media <span class="optional">(optional)</span></label>
+      <input id="website" placeholder="e.g. instagram.com/yourshop">
+
+      <label for="grading">Do you currently use CGC/CBCS grading?</label>
+      <select id="grading">
+        <option value="">— select —</option>
+        <option value="yes-regularly">Yes, regularly</option>
+        <option value="yes-sometimes">Sometimes, for key issues</option>
+        <option value="no">No, mostly raw/ungraded</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tell Us More</legend>
+      <label for="message">What are you hoping to get out of Comic Coin?</label>
+      <textarea id="message" required placeholder="e.g. protecting high-value inventory, giving customers more confidence, curious about the pilot..."></textarea>
+
+      <label for="heard">How did you hear about us? <span class="optional">(optional)</span></label>
+      <input id="heard">
+    </fieldset>
+
+    <!-- Honeypot field: real users never see or fill this in -->
+    <div class="hp-field" aria-hidden="true">
+      <label for="companyWebsite">Leave this field empty</label>
+      <input id="companyWebsite" tabindex="-1" autocomplete="off">
+    </div>
+
+    <button type="submit" id="submitBtn">Send to Comic Coin</button>
+    <div class="fine-print">Submitting this form doesn't create any agreement — we'll follow up to talk further.</div>
+    <div id="status" class="status"></div>
+  </form>
+
+  <div id="confirmation" class="confirmation">
+    <h2>Got it.</h2>
+    <p>Thanks for reaching out — we'll be in touch soon to talk about the pilot.</p>
+  </div>
+
+</div>
+
+<script>
+const form = document.getElementById('partnerForm');
+const submitBtn = document.getElementById('submitBtn');
+const statusEl = document.getElementById('status');
+const confirmationEl = document.getElementById('confirmation');
+
+/**
+ * TODO before going live: this currently only validates and logs the
+ * submission — it does NOT actually deliver it anywhere yet. Wire this up
+ * to a real delivery method (Formspree, a backend endpoint, etc.) before
+ * this page is used with real shop owners, or submissions will be lost.
+ */
+async function submitPartnerInquiry(data) {
+  console.log('[Comic Coin partner inquiry — NOT yet delivered anywhere]', data);
+  // Placeholder only. Replace this with a real fetch() to a form-delivery
+  // service or backend endpoint once one is chosen.
+  return { ok: true };
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // Honeypot check — if this hidden field has a value, it's a bot.
+  if (document.getElementById('companyWebsite').value) {
+    // Silently pretend success to avoid tipping off bots.
+    form.style.display = 'none';
+    confirmationEl.classList.add('show');
+    return;
+  }
+
+  const data = {
+    shopName: document.getElementById('shopName').value.trim(),
+    contactName: document.getElementById('contactName').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    city: document.getElementById('city').value.trim(),
+    state: document.getElementById('state').value.trim(),
+    website: document.getElementById('website').value.trim() || null,
+    grading: document.getElementById('grading').value || null,
+    message: document.getElementById('message').value.trim(),
+    heard: document.getElementById('heard').value.trim() || null,
+    submittedAt: new Date().toISOString(),
+  };
+
+  const required = ['shopName', 'contactName', 'email', 'city', 'state', 'message'];
+  const missing = required.filter((k) => !data[k]);
+  if (missing.length > 0) {
+    statusEl.textContent = 'Please fill in all required fields.';
+    statusEl.className = 'status err';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    statusEl.textContent = 'Please enter a valid email address.';
+    statusEl.className = 'status err';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  statusEl.textContent = 'Sending…';
+  statusEl.className = 'status';
+
+  try {
+    await submitPartnerInquiry(data);
+    form.style.display = 'none';
+    confirmationEl.classList.add('show');
+  } catch (err) {
+    statusEl.textContent = `Something went wrong: ${err.message}`;
+    statusEl.className = 'status err';
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
