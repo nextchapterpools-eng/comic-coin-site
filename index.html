@@ -46,6 +46,12 @@
   .nav-links { display: flex; gap: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; }
   .nav-links a { text-decoration: none; opacity: 0.62; transition: opacity 0.15s; }
   .nav-links a:hover { opacity: 1; }
+  .nav-links button.coming-soon {
+    font: inherit; text-transform: inherit; letter-spacing: inherit; color: inherit;
+    background: none; border: none; padding: 0; margin: 0;
+    opacity: 0.62; transition: opacity 0.15s; cursor: pointer;
+  }
+  .nav-links button.coming-soon:hover { opacity: 1; }
   .nav-cta {
     font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em;
     background: var(--red); color: var(--paper); padding: 10px 20px; border-radius: 999px;
@@ -98,6 +104,19 @@
     transition: background 0.2s ease, border-color 0.2s ease;
   }
   .btn-secondary:hover { background: var(--paper-dim); border-color: rgba(36,31,26,0.4); }
+
+  /* --- Coming-soon CTAs (sign-up isn't publicly live yet) --- */
+  button.coming-soon { font-family: inherit; cursor: pointer; }
+  .coming-soon-toast {
+    position: fixed; bottom: 28px; left: 50%; z-index: 1000;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    padding: 14px 24px; border-radius: 999px; box-shadow: var(--shadow-md);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .coming-soon-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -216,7 +235,9 @@
     <a href="#how">How It Works</a>
     <a href="#pricing">Pricing</a>
     <a href="#benefits">Why It Matters</a>
+    <a href="#collectors">For Collectors</a>
     <a href="#shops">For Shops</a>
+    <button type="button" class="coming-soon" onclick="showComingSoonToast()">Get Started</button>
   </div>
   <a class="nav-cta" href="#shops">Partner Your Shop</a>
 </nav>
@@ -249,6 +270,7 @@
   <h1>Know exactly<br>what you're <span class="accent">holding.</span></h1>
   <p class="sub">Every comic gets a verified, tamper-evident record of its condition and ownership history — checked with a scan, not just a signature on a slab.</p>
   <div class="hero-ctas">
+    <button type="button" class="btn-primary coming-soon" onclick="showComingSoonToast()">Mint Your Comics</button>
     <a class="btn-primary" href="#shops">Partner Your Shop</a>
     <a class="btn-secondary" href="#how">See How It Works</a>
   </div>
@@ -340,6 +362,19 @@
   </div>
 </section>
 
+<section id="collectors">
+  <div class="section-head">
+    <div class="eyebrow">For Collectors</div>
+    <h2>Not just for shops — your own collection too.</h2>
+  </div>
+  <p style="max-width:560px;margin:0 auto 32px;text-align:center;font-size:15.5px;line-height:1.65;color:rgba(36,31,26,0.72);">
+    You don't need a shop to use Comic Coin. Any collector can create their own account, mint a verified record for a comic they own, and build a real, provable history for their personal collection — the same trust and provenance a shop gets, for your own books.
+  </p>
+  <div style="text-align:center;">
+    <button type="button" class="btn-primary coming-soon" onclick="showComingSoonToast()">Mint Your Comics</button>
+  </div>
+</section>
+
 <section class="shop-band" id="shops">
   <svg class="band-coin" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -393,5 +428,15 @@
   <p>© 2026 Comic Coin. Built for collectors and the shops they trust.</p>
 </footer>
 
+<div id="comingSoonToast" class="coming-soon-toast" role="status" aria-live="polite">Sign-ups opening soon — check back!</div>
+<script>
+  let comingSoonTimer;
+  function showComingSoonToast() {
+    const toast = document.getElementById('comingSoonToast');
+    toast.classList.add('show');
+    clearTimeout(comingSoonTimer);
+    comingSoonTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+</script>
 </body>
 </html>
