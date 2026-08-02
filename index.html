@@ -204,6 +204,12 @@
   footer .foot-logo svg { width: 30px; height: 30px; }
   footer .foot-logo span { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 15px; }
   footer p { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: rgba(36,31,26,0.45); margin: 4px 0; }
+  footer button.coming-soon {
+    font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit;
+    background: none; border: none; padding: 0; margin: 6px 0 0; cursor: pointer;
+    text-decoration: underline; opacity: 0.8; transition: opacity 0.15s;
+  }
+  footer button.coming-soon:hover { opacity: 1; }
 </style>
 </head>
 <body>
@@ -425,6 +431,7 @@
     <span>COMIC COIN</span>
   </div>
   <p>Currently piloting on XRPL Testnet — no real monetary transactions yet.</p>
+  <p><button type="button" class="coming-soon" onclick="showComingSoonToast()">Support &amp; Feedback</button></p>
   <p>© 2026 Comic Coin. Built for collectors and the shops they trust.</p>
 </footer>
 
